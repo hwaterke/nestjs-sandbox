@@ -4,6 +4,8 @@ import {databaseConfig} from './config/database.config'
 import {GraphQLModule} from '@nestjs/graphql'
 import {isProduction} from './config/env'
 import {HealthModule} from './health/health.module'
+import {UsersModule} from './users/users.module'
+import {AuthModule} from './auth/auth.module'
 
 @Module({
   imports: [
@@ -15,6 +17,7 @@ import {HealthModule} from './health/health.module'
       sortSchema: true,
     }),
     HealthModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

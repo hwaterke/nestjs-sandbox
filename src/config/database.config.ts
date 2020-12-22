@@ -1,12 +1,16 @@
 import {TypeOrmModuleOptions} from '@nestjs/typeorm'
+import {ENTITIES} from './entities'
 
-export const databaseConfig: TypeOrmModuleOptions = {
+const developmentDatabaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
   host: 'localhost',
   port: 5432,
   username: 'postgres',
   password: 'root',
   database: 'postgres',
-  entities: [],
+  entities: ENTITIES,
   synchronize: true,
+  logging: true,
 }
+
+export const databaseConfig = developmentDatabaseConfig
