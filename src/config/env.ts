@@ -1,8 +1,12 @@
 export const nodeEnv = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return 'production'
+  switch (process.env.NODE_ENV) {
+    case 'production':
+      return 'production'
+    case 'test':
+      return 'test'
+    default:
+      return 'development'
   }
-  return 'development'
 }
 
 export const isProduction = () => {
