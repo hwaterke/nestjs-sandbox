@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthResolver.me (e2e) should fail with a JWT token for an non existing user 1`] = `
+Object {
+  "data": null,
+  "errors": Array [
+    [GraphQLError: Unauthorized],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`AuthResolver.me (e2e) should fail with an invalid JWT token 1`] = `
+Object {
+  "data": null,
+  "errors": Array [
+    [GraphQLError: Unauthorized],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`AuthResolver.me (e2e) should fail without a token 1`] = `
+Object {
+  "data": null,
+  "errors": Array [
+    [GraphQLError: Unauthorized],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`AuthResolver.me (e2e) should return the current user 1`] = `
+Object {
+  "data": Object {
+    "me": Object {
+      "email": "test@example.com",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

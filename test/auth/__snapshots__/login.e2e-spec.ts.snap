@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthResolver.login (e2e) should fail with an non existing email 1`] = `
+Object {
+  "data": null,
+  "errors": Array [
+    [GraphQLError: INCORRECT_EMAIL_OR_PASSWORD],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`AuthResolver.login (e2e) should return the current user and a token 1`] = `
+Object {
+  "email": "test@example.com",
+}
+`;

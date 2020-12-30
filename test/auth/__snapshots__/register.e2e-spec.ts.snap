@@ -1,23 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AuthResolver.register (e2e) Authentication should be allowed to register 1`] = `
+exports[`AuthResolver.register (e2e) should be allowed to register 1`] = `
 Object {
-  "data": Object {
-    "register": Object {
-      "email": "test@example.com",
-    },
-  },
-  "errors": undefined,
-  "extensions": undefined,
-  "http": Object {
-    "headers": Headers {
-      Symbol(map): Object {},
-    },
-  },
+  "email": "test@example.com",
 }
 `;
 
-exports[`AuthResolver.register (e2e) Authentication should not be allowed to register with an already used email 1`] = `
+exports[`AuthResolver.register (e2e) should not be allowed to register with an already used email 1`] = `
 Object {
   "data": null,
   "errors": Array [
@@ -32,7 +21,7 @@ Object {
 }
 `;
 
-exports[`AuthResolver.register (e2e) Authentication should not be allowed to register with an invalid email 1`] = `
+exports[`AuthResolver.register (e2e) should not be allowed to register with an invalid email 1`] = `
 Object {
   "data": null,
   "errors": Array [
@@ -47,7 +36,7 @@ Object {
 }
 `;
 
-exports[`AuthResolver.register (e2e) Authentication should not be allowed to register with password too short 1`] = `
+exports[`AuthResolver.register (e2e) should not be allowed to register with password too short 1`] = `
 Object {
   "data": null,
   "errors": Array [

@@ -1,98 +1,100 @@
 import {Test, TestingModule} from '@nestjs/testing'
-import {INestApplication} from '@nestjs/common'
-import {ApolloServerTestClient} from 'apollo-server-testing'
 import {gql} from 'apollo-server-express'
-import {AppModule} from '../../src/app.module'
-import {createNestApplicationAndApolloTestClient} from '../test-utils'
 import {Connection} from 'typeorm'
+import {AppModule} from '../../src/app.module'
+import {TestingUtils} from '../utils/testing.utils'
 
 const REGISTER = gql`
   mutation register($email: String!, $password: String!) {
     register(email: $email, password: $password) {
-      email
+      user {
+        email
+      }
+      token
     }
   }
 `
 
 describe('AuthResolver.register (e2e)', () => {
-  let app: INestApplication
-  let apolloClient: ApolloServerTestClient
   let connection: Connection
+  let testUtils: TestingUtils
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()
 
-    ;({app, apolloClient} = await createNestApplicationAndApolloTestClient(
-      moduleFixture
-    ))
+    testUtils = await TestingUtils.initNestApplication(moduleFixture)
 
     connection = moduleFixture.get(Connection)
   })
 
   afterEach(() => {
+    testUtils.token = null
     return connection.synchronize(true)
   })
 
   afterAll(() => {
-    return app.close()
+    return testUtils.close()
   })
 
-  describe('Authentication', () => {
-    it('should be allowed to register', async () => {
-      const result = await apolloClient.mutate({
-        mutation: REGISTER,
-        variables: {
-          email: 'test@example.com',
-          password: '12345678',
-        },
-      })
-      expect(result).toMatchSnapshot()
+  it('should be allowed to register', async () => {
+    const result = await testUtils.apolloClient.mutate({
+      mutation: REGISTER,
+      variables: {
+        email: 'test@example.com',
+        password: '12345678',
+      },
     })
 
-    it('should not be allowed to register with an invalid email', async () => {
-      const result = await apolloClient.mutate({
-        mutation: REGISTER,
-        variables: {
-          email: 'test',
-          password: '12345678',
-        },
-      })
+    expect(result.errors).toBeUndefined()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    expect(result.data.register.user).toMatchSnapshot()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    expect(result.data.register.token).toBeDefined()
+  })
 
-      expect(result).toMatchSnapshot()
+  it('should not be allowed to register with an invalid email', async () => {
+    const result = await testUtils.apolloClient.mutate({
+      mutation: REGISTER,
+      variables: {
+        email: 'test',
+        password: '12345678',
+      },
     })
 
-    it('should not be allowed to register with password too short', async () => {
-      const result = await apolloClient.mutate({
-        mutation: REGISTER,
-        variables: {
-          email: 'test@example.com',
-          password: '1234567',
-        },
-      })
+    expect(result).toMatchSnapshot()
+  })
 
-      expect(result).toMatchSnapshot()
+  it('should not be allowed to register with password too short', async () => {
+    const result = await testUtils.apolloClient.mutate({
+      mutation: REGISTER,
+      variables: {
+        email: 'test@example.com',
+        password: '1234567',
+      },
     })
 
-    it('should not be allowed to register with an already used email', async () => {
-      await apolloClient.mutate({
-        mutation: REGISTER,
-        variables: {
-          email: 'test@example.com',
-          password: '12345678',
-        },
-      })
+    expect(result).toMatchSnapshot()
+  })
 
-      const result = await apolloClient.mutate({
-        mutation: REGISTER,
-        variables: {
-          email: 'test@example.com',
-          password: '12345678',
-        },
-      })
-
-      expect(result).toMatchSnapshot()
+  it('should not be allowed to register with an already used email', async () => {
+    await testUtils.apolloClient.mutate({
+      mutation: REGISTER,
+      variables: {
+        email: 'test@example.com',
+        password: '12345678',
+      },
     })
+
+    const result = await testUtils.apolloClient.mutate({
+      mutation: REGISTER,
+      variables: {
+        email: 'test@example.com',
+        password: '12345678',
+      },
+    })
+
+    expect(result).toMatchSnapshot()
   })
 })

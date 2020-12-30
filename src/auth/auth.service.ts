@@ -1,19 +1,23 @@
 import {Injectable} from '@nestjs/common'
-import {RegisterInput} from './dto/register.input'
-import {UserObjectType} from '../users/types/user.type'
-import {Repository} from 'typeorm'
-import {User} from '../users/entities/user.entity'
+import {JwtService} from '@nestjs/jwt'
 import {InjectRepository} from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
+import {Repository} from 'typeorm'
+import {User} from '../users/entities/user.entity'
 import {LoginInput} from './dto/login.input'
+import {RegisterInput} from './dto/register.input'
+import {UserWithTokenObjectType} from './dto/user-with-token.type'
 
 @Injectable()
 export class AuthService {
   constructor(
+    private jwtService: JwtService,
     @InjectRepository(User) private userRepository: Repository<User>
   ) {}
 
-  async register(registerInput: RegisterInput): Promise<UserObjectType> {
+  async register(
+    registerInput: RegisterInput
+  ): Promise<UserWithTokenObjectType> {
     const emailAvailable = await this.isEmailAvailable(registerInput.email)
     if (!emailAvailable) {
       throw new Error('EMAIL_ALREADY_USED')
@@ -26,7 +30,12 @@ export class AuthService {
       password: hashedPassword,
     })
 
-    return this.userRepository.save(user)
+    await this.userRepository.save(user)
+
+    return {
+      user,
+      token: this.generateJWT(user.uuid),
+    }
   }
 
   async login(loginInput: LoginInput) {
@@ -38,7 +47,12 @@ export class AuthService {
         user.password
       )
       if (passwordMatch) {
-        return user
+        const token = this.generateJWT(user.uuid)
+
+        return {
+          user,
+          token,
+        }
       }
     }
     throw new Error('INCORRECT_EMAIL_OR_PASSWORD')
@@ -55,5 +69,9 @@ export class AuthService {
   async isEmailAvailable(email: string) {
     const totalEmails = await this.userRepository.count({email})
     return totalEmails === 0
+  }
+
+  generateJWT(userUuid: string) {
+    return this.jwtService.sign({uuid: userUuid})
   }
 }
