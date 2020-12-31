@@ -1,4 +1,5 @@
 import {Module} from '@nestjs/common'
+import {ConfigModule} from '@nestjs/config'
 import {TypeOrmModule} from '@nestjs/typeorm'
 import {databaseConfig} from './config/database.config'
 import {GraphQLModule} from '@nestjs/graphql'
@@ -8,6 +9,7 @@ import {AuthModule} from './auth/auth.module'
 
 @Module({
   imports: [
+    ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRoot(databaseConfig),
     GraphQLModule.forRoot({
       debug: !isProduction(),
