@@ -18,6 +18,12 @@ module.exports = {
     jest: true,
   },
   rules: {
+    'no-console': 'error',
+    eqeqeq: 'error',
+    'prefer-const': 'error',
+    curly: ['error', 'all'],
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', {ignoreRestSiblings: true}],
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
