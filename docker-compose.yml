@@ -1,5 +1,15 @@
-version: '2'
+version: '3.7'
 services:
+  api:
+    build:
+      context: .
+    environment:
+      - DB_HOST=db
+      - JWT_SECRET=s3cr3t
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
   db:
     image: postgres
     environment:

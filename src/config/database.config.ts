@@ -1,18 +1,7 @@
+import {ConfigService} from '@nestjs/config'
 import {TypeOrmModuleOptions} from '@nestjs/typeorm'
 import {ENTITIES} from './entities'
 import {nodeEnv} from './env'
-
-const developmentDatabaseConfig: TypeOrmModuleOptions = {
-  type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'root',
-  database: 'postgres',
-  entities: ENTITIES,
-  synchronize: true,
-  logging: true,
-}
 
 const testDatabaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
@@ -25,5 +14,21 @@ const testDatabaseConfig: TypeOrmModuleOptions = {
   synchronize: true,
 }
 
-export const databaseConfig =
-  nodeEnv() === 'test' ? testDatabaseConfig : developmentDatabaseConfig
+export const getDatabaseConfig = (
+  configService: ConfigService
+): TypeOrmModuleOptions => {
+  if (nodeEnv() === 'test') {
+    return testDatabaseConfig
+  }
+
+  return {
+    type: 'postgres',
+    host: configService.get<string>('DB_HOST', 'localhost'),
+    port: 5432,
+    username: 'postgres',
+    password: 'root',
+    database: 'postgres',
+    entities: ENTITIES,
+    synchronize: true,
+  }
+}
