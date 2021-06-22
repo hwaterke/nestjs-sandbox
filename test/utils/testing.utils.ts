@@ -36,7 +36,6 @@ export class TestingUtils {
       }
     }
 
-    // @ts-expect-error: Discrepancy of apollo-server-core version between @nestjs/graphql and apollo-server-testing
     this._apolloClient = createTestClient(apolloServer)
   }
 
