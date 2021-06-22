@@ -29,24 +29,23 @@ const testDatabaseConfig: TypeOrmModuleOptions = {
 export const getDatabaseConfig = (
   configService: ConfigService
 ): TypeOrmModuleOptions => {
-  if (nodeEnv() === 'test') {
-    return testDatabaseConfig
-  }
-
-  if (nodeEnv() === 'development') {
-    return devDatabaseConfig
-  }
-
-  return {
-    type: 'postgres',
-    host: configService.get<string>('DB_HOST', 'localhost'),
-    port: 5432,
-    username: 'postgres',
-    password: 'root',
-    database: 'postgres',
-    entities: ENTITIES,
-    synchronize: false,
-    migrationsRun: true,
-    migrations: ['dist/database/migrations/*.{ts,js}'],
+  switch (nodeEnv()) {
+    case 'development':
+      return devDatabaseConfig
+    case 'test':
+      return testDatabaseConfig
+    case 'production':
+      return {
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST', 'localhost'),
+        port: 5432,
+        username: 'postgres',
+        password: 'root',
+        database: 'postgres',
+        entities: ENTITIES,
+        synchronize: false,
+        migrationsRun: true,
+        migrations: ['dist/database/migrations/*.{ts,js}'],
+      }
   }
 }
