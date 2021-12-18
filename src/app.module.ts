@@ -6,6 +6,7 @@ import {AuthModule} from './auth/auth.module'
 import {getDatabaseConfig} from './config/database.config'
 import {isProduction} from './config/env'
 import {HealthModule} from './health/health.module'
+import {UsersModule} from './users/users.module'
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import {HealthModule} from './health/health.module'
     }),
     HealthModule,
     AuthModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
